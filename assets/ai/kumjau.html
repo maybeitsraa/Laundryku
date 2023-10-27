@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>KUMPULAN HIJAU AI</title>
+    <link rel="shortcut icon" href="../media/icon.ico" type="image/x-icon">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.chat-container {
+    width: 80%;
+    max-width: 600px;
+    background-color: #f7f7f7;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.chat-header {
+    padding: 20px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 20px 20px 0 0;
+}
+
+.chat-box {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    animation: fadeIn 0.5s ease, typeMessage 1s steps(40, end);
+}
+
+.received {
+    background-color: #f2f2f2;
+    align-self: flex-start;
+}
+
+.sent {
+    background-color: #d5eefc;
+    align-self: flex-end;
+}
+
+.input-container {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+#userInput {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    background-color: #f7f7f7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#sendButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes typeMessage {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+                <div class="chat-header-text">Kumjau AI ( KUMPULAN HIJAU ) </div>
+            </a>
+            <div class="status"></div>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="message received">Hallo! 👋, Saya Kumjau AI. Ada Yang Bisa Saya Bantu?</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Ketik pesan Anda di sini...">
+            <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <script>
+        const chatBox = document.getElementById('chatBox');
+const userInput = document.getElementById('userInput');
+const sendButton = document.getElementById('sendButton');
+
+const apiKey = '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'; // Ganti dengan kunci API GPT-3.5 Anda
+
+sendButton.addEventListener('click', sendMessage);
+
+async function sendMessage() {
+    const userMessage = userInput.value;
+    if (userMessage.trim() !== '') {
+        appendMessage(userMessage, 'sent');
+        userInput.value = '';
+
+        // Panggil fungsi untuk mendapatkan balasan dari Chatbot
+        await getChatbotResponse(userMessage);
+    }
+}
+
+async function getChatbotResponse(userMessage) {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                { role: 'system', content: 'Kamu adalah Robot kumpulan hijau. kamu adalah help center dari website kumpulanhijau.com, kamu lahir pada tanggal 09/10/2023. Cara menginput sampah pada web kumpulan hijau : - pilih menu tulis sampah, - Masukan nama panjang, - Masukan alamat, - masukan jenis rongsok, - kirim. Kamu di buat oleh Arasya Dan Rahmat.' },
+                { role: 'user', content: userMessage },
+            ],
+        }),
+    });
+
+    const responseData = await response.json();
+    const chatbotReply = responseData.choices[0].message.content;
+
+    appendMessage(chatbotReply, 'received');
+}
+
+function appendMessage(message, type) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', type);
+    messageElement.innerText = message;
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+
+
+    </script>
+</body>
+</html>
